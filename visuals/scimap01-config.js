@@ -62,7 +62,6 @@ dataprep.scimap01 = function(ntwrk) {
             notFoundCount++;
         }
     })
-    console.log(underlyingScimapData)
     console.log("Found: " + foundCount);
     console.log("Not Found: " + notFoundCount);
     ntwrk.filteredData.records.data = newData;
