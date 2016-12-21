@@ -8,11 +8,11 @@
         <script src="lib/head.js"></script>
         <script src="src/Init.js"></script>
     </head>
-
     <body>
         <div layout="row">
-            <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-config="visuals/scimap01-config.js" ng-vis-type="MapOfScience" id="scimap01" ng-data-field="data/toVis.json" ng-identifier="scimap01">
+            <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-config="visuals/scimap01-config.js" ng-vis-type="MapOfScience" id="scimap01" ng-data-field="data/example.json" ng-identifier="scimap01">
+            </div>
+            <div ng-include="'partials/scimap-legend.html'"></div>
         </div>
     </body>
 </html>
-

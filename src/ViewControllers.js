@@ -196,10 +196,9 @@ app.controller('CheckboxCtrl', function($scope, $attrs) {
         $scope.showCustomToast = function() {
             $mdToast.show({
                 hideDelay: 0,
-                position: 'bottom right',
+                position: 'bottom left',
                 controller: 'ToastCtrl',
-                template: $scope.template,
-                content: "Poo"
+                template: $scope.template
             });
         };
         $scope.setTemplateText = function(text) {
@@ -271,8 +270,6 @@ app.controller('CheckboxCtrl', function($scope, $attrs) {
     }])
     .filter('myFilter', [function() {
         return function(array, expression) {
-            console.log("eh")
-                //an example
             return array.filter(function(val, index) {
                 return val > val;
             });

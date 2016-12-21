@@ -20,8 +20,6 @@ var visualizationFunctions = {};
 var configs = {};
 var events = {};
 var dataprep = {};
-// HUBzero: call back to nanoHUB for user-curated data where available
-var remoteSourceTemplate = 'https://dev.nanohub.org/citations/curate/download/{hash}';
 
 app.service('Data', ['$rootScope', '$http', function($rootScope, $http) {
     var service = {
@@ -104,10 +102,6 @@ app.service('Data', ['$rootScope', '$http', function($rootScope, $http) {
 }])
 
 app.controller('ngCnsVisual', ['$rootScope', '$scope', '$element', '$attrs', 'Data', function($rootScope, $scope, elem, attrs, Data) {
-    var remoteSource = location.search.match(/[?&]hash=([a-f0-9]{40})/);
-    if (remoteSource) {
-        attrs.ngDataField = remoteSourceTemplate.replace('{hash}', remoteSource[1]);
-    }
     $scope.attrs = attrs;
     $scope.elem = elem;
     $scope.Visualization = new Visualization($scope, elem, attrs);

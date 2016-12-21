@@ -37,6 +37,8 @@ var verbose = false;
             "DatasourceMap.js": "src/DatasourceMap.js"
         }, {
             "Utilities.js": "src/Utilities.js"
+        }, {
+            "journalMapping.js": "data/journalMapping.js"
         },
         //Nothing goes after this script
         //configs go down there

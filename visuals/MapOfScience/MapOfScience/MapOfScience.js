@@ -1,12 +1,9 @@
 head.js('visuals/MapOfScience/MapOfScience/underlyingScimapData.js')
 head.js('visuals/MapOfScience/MapOfScience/disc_lookup.js')
 
-// head.js('visuals/MapOfScience/MapOfScience/d3-forceEdgeBundling.js')
-
-// head.js('http://philogb.github.io/mingle/lib/kdtree.js')
-// head.js('http://philogb.github.io/mingle/lib/philogl.js')
-// head.js('http://philogb.github.io/mingle/graph.js')
-// head.js('http://philogb.github.io/mingle/mingle.js')
+// head.js('visuals/MapOfScience/MapOfScience/mingle/graph.js');
+// head.js('visuals/MapOfScience/MapOfScience/mingle/mingle.js');
+// head.js('visuals/MapOfScience/MapOfScience/mingle/kdtree.js');
 
 visualizationFunctions.MapOfScience = function(element, data, opts) {
     var that = this;
@@ -19,6 +16,11 @@ visualizationFunctions.MapOfScience = function(element, data, opts) {
         background: false
     })
     this.VisFunc = function() {
+        that.SVG.background = that.SVG.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "white")
+            .attr("opacity", .00000001)
         var defaultNodeSize = 1;
 
         underlyingScimapData.nodes.forEach(function(d, i) {
@@ -31,9 +33,9 @@ visualizationFunctions.MapOfScience = function(element, data, opts) {
         createScales();
         that.SVG.underlyingNodeG = createNodes(underlyingScimapData);
         that.SVG.underlyingNodes = that.SVG.underlyingNodeG.selectAll("circle");
-        that.SVG.underlyingLabels = createLabels(underlyingScimapData);
         // results = bundleData(underlyingScimapData);
         that.SVG.underlyingEdges = createEdges(underlyingScimapData);
+        that.SVG.underlyingLabels = createLabels(underlyingScimapData);
         // that.SVG.underlyingEdges = that.SVG.underlyingEdgeG.selectAll("path");
 
         function nestDiscData(data) {
@@ -114,7 +116,7 @@ visualizationFunctions.MapOfScience = function(element, data, opts) {
         function createNodes(underlyingData) {
             var nodeG = that.SVG.selectAll(".underlyingNodes")
                 .data(underlyingData.nodes)
-                
+
             nodeG.enter()
                 .append("g")
                 .attr("class", function(d, i) {
@@ -123,7 +125,7 @@ visualizationFunctions.MapOfScience = function(element, data, opts) {
                 .attr("transform", function(d, i) {
                     return "translate(" + that.Scales.translateX(d.x) + "," + that.Scales.translateY(d.y) + ")"
                 })
-            
+
             nodeG
                 .append("circle")
                 .attr("r", defaultNodeSize)
@@ -155,6 +157,9 @@ visualizationFunctions.MapOfScience = function(element, data, opts) {
             return nodeG
         }
 
+
+        that.labelClicked = false;
+
         function createLabels(underlyingData) {
             return that.SVG.selectAll(".underlyingLabels")
                 .data(underlyingData.labels)
@@ -182,31 +187,128 @@ visualizationFunctions.MapOfScience = function(element, data, opts) {
                 })
                 .text(function(d, i) {
                     return d.disc_name;
-                }).on("mouseover", function(d, i) {
-                    that.SVG.underlyingNodes.classDeselect();
-                    that.SVG.underlyingEdges.classDeselect();
-                    that.SVG.underlyingLabels.classDeselect();
-                    d3.select(this).classSelect();
+                })
+                .on("click", function(d, i) {
+                    if (that.labelClicked) {
+                        that.SVG.selectAll("*").classDefault();
+                        that.labelClicked = false;
+                    } else {
+                        that.SVG.underlyingNodes.classDeselect();
+                        that.SVG.underlyingEdges.classDeselect();
+                        that.SVG.underlyingLabels.classDeselect();
+                        d3.select(this).classSelect();
 
-                    that.SVG.underlyingNodes.filter(function(d1, i1) {
-                        if (d.disc_id == d1.disc_id) {
-                            d3.select(this).classSelect();
-                            return true;
-                        }
-                        return false;
-                    }).each(function(d1, i1) {
-                        that.SVG.underlyingEdges.filter(".s" + d1.subd_id + ", .t" + d1.subd_id).each(function(d2, i2) {
-                            d3.select(this).classSelect();
-                            that.SVG.underlyingNodes.filter(".subd_id" + d2.subd_id1 + ".subd_id" + d2.subd_id2).classSelect();
+                        that.SVG.underlyingNodes.filter(function(d1, i1) {
+                            if (d.disc_id == d1.disc_id) {
+                                d3.select(this).classSelect();
+                                return true;
+                            }
+                            return false;
+                        }).each(function(d1, i1) {
+                            that.SVG.underlyingEdges.filter(".s" + d1.subd_id + ", .t" + d1.subd_id).each(function(d2, i2) {
+                                d3.select(this).classSelect();
+                                that.SVG.underlyingNodes.filter(".subd_id" + d2.subd_id1 + ".subd_id" + d2.subd_id2).classSelect();
+                            })
                         })
-                    })
-
-                }).on("mouseout", function(d, i) {
-                    that.SVG.selectAll("*").classDefault();
+                        that.labelClicked = true;
+                    }
                 })
         }
 
         function createEdges(underlyingData) {
+            // var newEdges = [];
+
+            // underlyingScimapData.edges.forEach(function(d, i) {
+            //     var sourceNode = underlyingScimapData.nodes.filter(function(d1, i1) {
+            //         return d1.subd_id == d.subd_id1;
+            //     })[0];
+            //     var targetNode = underlyingScimapData.nodes.filter(function(d1, i1) {
+            //         return d1.subd_id == d.subd_id2;
+            //     })[0];
+
+            //     var sourceDisc = underlyingScimapData.labels.filter(function(d1, i1) {
+            //         return d1.disc_id == sourceNode.disc_id;
+            //     })[0];
+
+            //     var targetDisc = underlyingScimapData.labels.filter(function(d1, i1) {
+            //         return d1.disc_id == targetNode.disc_id;
+            //     })[0];
+
+
+
+            //     newEdges.push([
+            //         that.Scales.translateX(sourceNode.x),
+            //         that.Scales.translateY(sourceNode.y),
+            //         that.Scales.translateX(sourceDisc.x),
+            //         that.Scales.translateY(sourceDisc.y)
+            //     ])
+
+            //     newEdges.push([
+            //         that.Scales.translateX(sourceDisc.x),
+            //         that.Scales.translateY(sourceDisc.y),
+            //         that.Scales.translateX(targetDisc.x),
+            //         that.Scales.translateY(targetDisc.y)
+            //     ])
+
+            //     newEdges.push([
+            //         that.Scales.translateX(targetDisc.x),
+            //         that.Scales.translateY(targetDisc.y),
+            //         that.Scales.translateX(targetNode.x),
+            //         that.Scales.translateY(targetNode.y)
+            //     ])
+
+            // })
+
+            // var edgeMap = [];
+            // newEdges.forEach(function(d1, i1) {
+            //     if (i1 < 20) {
+            //         console.log(d1);
+            //     }
+            //     edgeMap.push({
+            //         id: i1,
+            //         name: i1,
+            //         data: {
+            //             coords: d1,
+            //             weight: d1.Weight
+            //         }
+            //     })
+            // })
+
+            // var bundle = new Bundler();
+            // bundle.setNodes(edgeMap);
+            // bundle.buildNearestNeighborGraph();
+            // bundle.MINGLE();
+
+            // that.SVG.edges = that.SVG.append("g");
+
+            // bundle.graph.each(function(node) {
+            //     var edges = node.unbundleEdges(1);
+            //     edges.forEach(function(d, i) {
+            //         var lineArr = [];
+            //         d.forEach(function(d1, i1) {
+            //             lineArr.push({
+            //                 x: d1.pos[0],
+            //                 y: d1.pos[1]
+            //             })
+            //         })
+            //         that.SVG.edges.append("path")
+            //             // .attr("class", "wvf-edge")
+            //             .attr("opacity", .2)
+            //             .attr("stroke", "grey")
+            //             .attr("stroke-width", .5)
+            //             .attr("fill", "none")
+            //             .attr("d", Utilities.lineFunction(lineArr))
+            //             .on("click.remove", function(d, i) {
+            //                 d3.select(this).remove();
+            //             })
+            //     })
+            // })
+
+
+
+
+
+
             return that.SVG.selectAll("paath")
                 .append("g")
                 .data(underlyingData.edges)

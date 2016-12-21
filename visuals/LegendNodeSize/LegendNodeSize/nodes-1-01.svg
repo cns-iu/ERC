@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="500px" height="400px" viewBox="0 0 170 200" preserveAspectRatio="xMidYMid meet">
+    <text transform="matrix(1 0 0 1 20.7458 17.1423)" fill="#231F20" font-family="'OpenSans-Semibold'" font-size="13">Some Sort of Title</text>
+    <circle fill="none" stroke="#231F20" stroke-width="2" stroke-miterlimit="10" cx="70" cy="110" r="64" />
+    <circle fill="none" stroke="#231F20" stroke-width="2" stroke-miterlimit="10" cx="70" cy="139" r="35" />
+    <circle fill="none" stroke="#231F20" stroke-width="2" stroke-miterlimit="10" cx="70" cy="166" r="8" />
+    <text transform="matrix(1 0 0 1 158 44)" text-anchor="end" fill="#231F20" font-family="'OpenSans'" font-size="13">10</text>
+    <text transform="matrix(1 0 0 1 158 102)" text-anchor="end" fill="#231F20" font-family="'OpenSans'" font-size="13">5.5</text>
+    <text transform="matrix(1 0 0 1 158 156)" text-anchor="end" fill="#231F20" font-family="'OpenSans'" font-size="13">1</text>
+    <line fill="none" stroke="#222" stroke-width="0.4" stroke-dasharray="11, 4" x1="70" y1="46" x2="160" y2="46" />
+    <line fill="none" stroke="#222" stroke-width="0.4" stroke-dasharray="11, 4" x1="70" y1="104" x2="160" y2="104" />
+    <line fill="none" stroke="#222" stroke-width="0.4" stroke-dasharray="11, 4" x1="70" y1="158" x2="160" y2="158" />
+    <text transform="matrix(1 0 0 1 20.9675 193.1902)" fill="#444445" font-family="'OpenSans-Italic'" font-size="8">*Nodes are scaled linearly and...</text>
+</svg>

@@ -57,41 +57,45 @@ var Visualization = function(scope) {
             var svgg = scope.SVGBase.append("g");
             if (args.zoomable) {
                 var scaleExtent = args.zoomLevels || [1, 10]
-                var zoom = d3.behavior.zoom()
+                scope.zoom = d3.behavior.zoom()
                     .scaleExtent(scaleExtent)
                     .on("zoom", zoomed);
                 function zoomed() {
-                    scope.SVG.attr("transform", "translate(" + zoom.translate() + ")scale(" + zoom.scale() + ")");
+                    scope.SVG.attr("transform", "translate(" + scope.zoom.translate() + ")scale(" + scope.zoom.scale() + ")");
                 }
                 scope.SVGBase.selectAll(".zoombutton")
                     .data(['zoom_in', 'zoom_out'])
                     .enter()
                     .append("rect")
                     .attr("x", function(d, i) {
-                        return 10 + 50 * i
+                        return 10 + 35 * i
                     })
                     .attr("y", 10)
-                    .attr("width", 40)
+                    .attr("width", 30)
                     .attr("height", 20)
                     .attr("class", "button")
                     .attr("id", function(d) {
                         return d
                     })
                     .style("fill", function(d, i) {
-                        return i ? "darkgrey" : "grey"
+                        return i ? "darkgrey" : "#D8D8D8"
                     })
+                    .style("cursor", "pointer")
+                    .style("border-radius", ".2em")
                 scope.SVGBase.selectAll(".zoomtext")
                     .data(['+', '-'])
                     .enter()
                     .append("text")
                     .attr("class", "button")
                     .attr("x", function(d, i) {
-                        return 25 + 50 * i
+                        return 20 + 35 * i
                     })
                     .attr("y", 25)
                     .text(function(d, i) {
                         return d
                     })
+                    .style("cursor", "pointer")
+
                 var intervalID;
                 d3.selectAll('.button').on('mousedown', function() {
                     d3.event.preventDefault();
@@ -103,9 +107,9 @@ var Visualization = function(scope) {
                     }, 50)
                 })
                 function zoom_by(factor) {
-                    var scale = zoom.scale(),
-                        extent = zoom.scaleExtent(),
-                        translate = zoom.translate(),
+                    var scale = scope.zoom.scale(),
+                        extent = scope.zoom.scaleExtent(),
+                        translate = scope.zoom.translate(),
                         x = translate[0],
                         y = translate[1],
                         target_scale = scale * factor;
@@ -123,13 +127,13 @@ var Visualization = function(scope) {
                     x = (x - out.dims.fixedWidth / 2) * factor + out.dims.fixedWidth / 2;
                     y = (y - out.dims.fixedHeight / 2) * factor + out.dims.fixedHeight / 2;
                     // Enact the zoom immediately
-                    zoom.scale(target_scale)
+                    scope.zoom.scale(target_scale)
                         .translate([x, y]);
                     zoomed();
                 }
 
 
-                scope.SVGBase.call(zoom);
+                scope.SVGBase.call(scope.zoom);
             }
             if (args.background) {
                 scope.SVGBase.background = scope.SVGBase.append("rect")
@@ -334,10 +338,8 @@ var Visualization = function(scope) {
             var indent = " ";
             if (scope.attrs.ngComponentFor != null) indent += "     ";
             if (scope.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Created scope: " + scope.attrs.ngIdentifier);
-            angular.element(document).ready(function() {
-                scope.RunChildVisualizations();
-                scope.RunEvents();
-            });
+            scope.RunChildVisualizations();
+            scope.RunEvents();
             scope.isFirstRun = false;
         })
 
