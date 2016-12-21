@@ -17,7 +17,6 @@ configs.scimap01 = {
 
 
 events.scimap01 = function(ntwrk) {
-    var hidden = false;    
     ntwrk.Scales.rScale = d3.scale[configs.scimap01.records.styleEncoding.size.scaleType]()
         .domain(d3.extent(ntwrk.nestedData.sub_disc, function(d, i) {
             return d.values.children.length
@@ -34,15 +33,11 @@ events.scimap01 = function(ntwrk) {
     ntwrk.SVG.underlyingEdges.on("mouseout", null)
 
     ntwrk.SVG.underlyingNodeG.on("click", function(d, i) {
-
-
         angular.element($("#legend-table")).scope().$apply(function(scope) {
             var something = [];
             var filtered = ntwrk.nestedData.sub_disc.filter(function(d1, i1) {
                 return parseInt(d1.key) == d.subd_id
             })
-
-            console.log(filtered);
 
             filtered.forEach(function(d1, i1) {
                 d1.values.children.forEach(function(d2, i2) {
