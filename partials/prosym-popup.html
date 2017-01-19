@@ -1,16 +1,16 @@
-<div layout="row" layout-margin class="legend default">
+<div layout="row" layout-margin class="popup" style="display: none">
     <div layout="column" layout-fill>
         <div layout="row">
             <div class="discipline-name">
-                <h2>Location: <span id="legend-location-name"></span></h2>
+                <h2>Location: <span id="popup-location-name"></span></h2>
             </div>
         </div>
         <div layout="row">
-            <!-- <md-progress-circular progress id="legend-table-progress" class="md-accent" md-mode="indeterminate"></md-progress-circular> -->
-            <p id="legend-table-no-records">No records found</p>
-            <div id="legend-table-container" class="default" ng-controller="tableCtrl" style="width: 100%">
-                <em>XX/XX nodes not shown here. Please provide paper affiliation data <a href="_blank">here</a>.</em>
-                <table id="legend-table" st-table="rowCollection" class="table table-striped" style="width: 100%">
+            <!-- <md-progress-circular progress id="popup-table-progress" class="md-accent" md-mode="indeterminate"></md-progress-circular> -->
+            <p id="popup-table-no-records">No records found</p>
+            <div id="popup-table-container" ng-controller="tableCtrl" style="width: 100%">
+                <em>XX/XX nodes not shown here. Please provide proper affiliation data <a href="_blank">here</a>.</em>
+                <table id="popup-table" st-table="rowCollection" class="table table-striped" style="width: 100%">
                     <thead>
                         <tr>
                             <th st-ratio="25" st-sort="auth">Author</th>

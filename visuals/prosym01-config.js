@@ -3,7 +3,7 @@ configs.prosym01 = {
         styleEncoding: {
             size: {
                 attr: "weight",
-                range: [4, 20],
+                range: [4, 10],
                 scaleType: "linear"
             }
             // "color": {
@@ -29,7 +29,7 @@ configs.prosym01 = {
     identifier: "id", //Unique identifier
     lat: "lat",
     lng: "lng",
-    categories: ["id", "city", "state"]
+    categories: ["city", "id", "state"]
 }
 
 
@@ -38,20 +38,20 @@ dataprep.prosym01 = function(ntwrk) {
 
 events.prosym01 = function(ntwrk) {
     setTimeout(function() {
-        nodeSize.setTitle("Number of publications")
+        nodeSize.setTitle("Weight")
         nodeSize.setNote("Based on zoom level")
         nodeSize.updateNodeSize(configs.prosym01.nodes.styleEncoding.size.range);
         nodeSize.updateText([ntwrk.categoryScales[ntwrk.currCategory].size(8), ntwrk.categoryScales[ntwrk.currCategory].size(76.8), ntwrk.categoryScales[ntwrk.currCategory].size(128)]);
     }, 20)
-    ntwrk.SVG.on("mousewheel", function() {
+    ntwrk.SVG.background.on("mousewheel", function() {
         setTimeout(function() {
-            nodeSize.updateText([ntwrk.categoryScales[ntwrk.currCategory].size(8 * 2) / ntwrk.zoom.scale(), ntwrk.categoryScales[ntwrk.currCategory].size(76.8 * 2) / ntwrk.zoom.scale(), ntwrk.categoryScales[ntwrk.currCategory].size(128 * 2) / ntwrk.zoom.scale()]);
+            nodeSize.updateText([ntwrk.categoryScales[ntwrk.currCategory].size(12.5) / ntwrk.zoom.scale(), ntwrk.categoryScales[ntwrk.currCategory].size(76.8) / ntwrk.zoom.scale(), ntwrk.categoryScales[ntwrk.currCategory].size(128) / ntwrk.zoom.scale()]);
         }, 10)
     })
     ntwrk.SVG.nodeG.on("click", function(d, i) {
 
         console.log(d);
-        angular.element($("#legend-table")).scope().$apply(function(scope) {
+        angular.element($("#popup-table")).scope().$apply(function(scope) {
             var something = [];
 
             d.values.children.forEach(function(d1, i1) {
@@ -62,18 +62,18 @@ events.prosym01 = function(ntwrk) {
             })
 
             if (d.values.children.length > 0) {
-                $(".legend").removeClass("default");
-                $("#legend-location-name").text(d.key);
-                $("#legend-table-container").removeClass("default");
+                $(".popup").css({display: "block"});
+                $("#popup-location-name").text(d.key);
+                $("#popup-table-container").css({display: "block"});
             } else {
-                $(".legend").addClass("default");
+                $(".popup").css({display: "none"})
             }
 
             scope.rowCollection = something
         })
     })
     ntwrk.SVG.background.on("click", function(d, i) {
-        $(".legend").addClass("default");
+        $(".popup").css({display: "none"})
     })
 
 }

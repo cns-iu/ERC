@@ -11,6 +11,8 @@ head.js('visuals/D3ProportionalSymbol/D3ProportionalSymbol/d3-ForceEdgeBundling.
 visualizationFunctions.D3ProportionalSymbol = function(element, data, opts) {
     var that = this;
     this.VisFunc = function() {
+
+
         that.config = that.CreateBaseConfig();
 
         that.SVG = that.config.easySVG(element[0], {
@@ -285,6 +287,7 @@ visualizationFunctions.D3ProportionalSymbol = function(element, data, opts) {
         }
 
         that.update();
+
     }
     return this;
 }

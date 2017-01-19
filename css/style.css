@@ -1,42 +1,150 @@
-/* ------ General Page Styles ------ */
-
-.ui-loader {
-    display: none;
-}
-
-html,
+/* --------- General Styles -------------- */
 body {
-    font-size: 14px;
-    font-family: 'open sans', sans-serif;
+    overflow-y: hidden;
+}
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }
 
-body {
-    font-family: 'Lato', sans-serif;
-    font-size: 13px;
-}
-
-h1 {
-    font-size: 1.3em;
+.container h3 {
     font-weight: 400;
+    font-size: 18px;
+    background-color: #eaeaea;
+    color: #222 !important;
+    padding: 5px;
+    margin: 0px;
 }
 
-h2 {
-    font-size: 1em;
-    font-weight: 300;
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
+
+/* ======================================= 
+ ============= Left Column ===============
+ =========================================  */
+
+.left-column {
+    height: 100vh;
+    width: 80%;
+    flex-direction: column;
 }
 
-h3 {
-    font-size: 20px;
-    font-family: open sans !important;
-    font-weight: 600;
-    color: #555 !important;
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
+
+/* --------- Main Vis Area -------------- */
+
+.main-vis {
+    min-height: 700px;
+    border: 1px solid #eaeaea;
+    align-items: flex-end;
+}
+
+
+/* ======================================= 
+ ============= Right Column ===============
+ =========================================  */
+
+.right-column {
+    flex-direction: column;
+    width: 20%;
+}
+
+
+/* ---------- Bar Graph ---------------- */
+
+.bar-graph-outer {
+    max-height: 100%;
+    /*  border: 1px solid #eaeaea;*/
+    overflow-y: auto;
+    height: 70%;
+}
+
+.bar-graph-inner {
+    overflow-y: hidden;
+    min-height: 720px;
+}
+
+
+/* --------- Legend -------------- */
+
+.legend-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.above-drawer button {
+    right: 0;
 }
 
 .legend {
+    display: flex;
+    /*  margin-right: 0 !important;*/
+    /*  justify-content: flex-end;*/
+    flex-direction: flex-end;
+    height: 150px;
+}
+
+.legend-row {
+    top: 0px;
+}
+
+.legend-item {
+    background: #fefefe;
+    border: 1px solid #eaeaea;
+    height: 150px;
+    width: 150px;
+}
+
+
+/* ----- Drawer ------ */
+
+.above-drawer {
+    align-self: flex-end;
+}
+
+.drawer-nav {
+    position: fixed;
+    top: 72vh;
+    z-index: 101;
+    /*  bottom: 0 !important;*/
+    overflow: none;
+    color: #222;
+    background-color: #fff;
+}
+
+
+/*!------------------------------------*\
+    Right
+\*!------------------------------------*/
+
+.drawer--right .drawer-nav {
+    right: -300.255rem;
+    -webkit-transition: right .6s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+    transition: right .6s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+}
+
+.drawer--right.drawer-open .drawer-nav,
+.drawer--right .drawer-hamburger,
+.drawer--right.drawer-open .drawer-navbar .drawer-hamburger {
+    right: 0;
+}
+
+.drawer--right.drawer-open .drawer-hamburger {
+    right: 301.255rem;
+}
+
+
+/*!------------------------------------*\
+    Hamburger
+\*!------------------------------------*/
+
+.drawer-hamburger {
+    /* position: fixed;
+  margin-bottom: 20px;*/
+    z-index: 104;
+    display: block;
+}
+
+.popup {
     background: white;
     outline: solid;
     outline-width: .125px;
@@ -54,13 +162,10 @@ h3 {
     overflow: hidden;
 }
 
-.legend-table-container {
+.popup-table-container {
     height: 100px;
 }
 
-.legend.default {
-    display: none;
-}
 
 .table {
     height: 100px;
@@ -68,11 +173,11 @@ h3 {
     width: inherit;
 }
 
-#legend-table-no-records {
+#popup-table-no-records {
     display: none;
 }
 
-#legend-table-container.default {
+#popup-table-container.default {
     display: none;
 }
 
@@ -89,7 +194,7 @@ tbody {
     overflow-y: scroll;
     display: inline-block;
     width: inherit;
-    height: 140px;
+    height: 130px;
 }
 
 thead > tr,
@@ -111,7 +216,6 @@ tbody td {
     overflow-x: hidden;
     text-overflow: ellipsis;
     display: inline-block;
-    text-align: left;
 }
 
 tfoot {
@@ -127,25 +231,3 @@ tfoot td {
 .table>tbody>tr:nth-child(odd)>th {
     background-color: #f9f9f9;
 }
-
-.hidelabelbutton {
-    float: right;
-    right: 0px;
-    position: absolute;
-    bottom: 0px;
-    margin: 4px;
-}
-
-#node-size {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    width: auto;
-    height: auto;
-    background: white;
-    opacity: .9;
-    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 5px 0 rgba(0, 0, 0, 0.16);
-}
-
-
-/*<!-- 46 -->*/

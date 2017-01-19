@@ -63,10 +63,14 @@ var Utilities = {
          * @description Scale used to create and render the Y Axis. Returns a modified version of the input scale where the range has been modified to fit the chart's layout. 
          */
         var yscale = d3.scale.linear();
+
+        var xrange = null
+        var yrange = null;
         /**
          * @memberOf chartArea
          * @description [x, y] coordinates of the start of the graph. Can be used to create partial chart areas on a visualization. Allows for user-defined offsetting and exceptions.
          */
+
         var originArr = [0, 0];
         /**
          * @memberOf chartArea
@@ -76,6 +80,9 @@ var Utilities = {
         var xorigin = [0, 0];
         var yorigin = [0, 0];
 
+        var chartXG = null;
+        var chartYG = null;
+
         function compute(data) {
             var width = endArr[0] - originArr[0]
             var height = endArr[1] - originArr[1]
@@ -83,9 +90,9 @@ var Utilities = {
             var chart = selector.append("g")
                 .attr("class", "chart")
 
-            var chartXG = chart.append("g")
+            chartXG = chart.append("g")
                 .attr("class", "x axis")
-            var chartYG = chart.append("g")
+            chartYG = chart.append("g")
                 .attr("class", "y axis")
 
             var chartXText = chart.append("text")
@@ -139,8 +146,11 @@ var Utilities = {
             }
 
 
-            xscale.range([0, end[0] - origin[0]])
-            yscale.range([0, end[1] - origin[1]])
+            xscale.range(xrange || [0, end[0] - origin[0]])
+            yscale.range(yrange || [0, end[1] - origin[1]])
+
+            chartXAxis.tickSize(-d3.max(yscale.range()))
+
 
             xorigin = [origin[0], origin[1]];
             yorigin = [origin[0], origin[1]];
@@ -150,8 +160,26 @@ var Utilities = {
             if (yorientation == "right") {
                 yorigin[0] = end[0]
             }
-            chartXG.attr("transform", "translate(" + xorigin + ")").call(chartXAxis);
-            chartYG.attr("transform", "translate(" + yorigin + ")").call(chartYAxis);
+
+
+
+            chartXG.attr("transform", "translate(" + xorigin + ")").call(chartXAxis).selectAll("g").filter(function(d) { return d; })
+                .classed("minor", true);
+            chartYG.attr("transform", "translate(" + yorigin + ")").call(chartYAxis).selectAll("g").filter(function(d) { return d; })
+                .classed("minor", true);
+
+
+
+        }
+        compute.chartXG = function(s) {
+            if (!arguments.length) return chartXG;
+            chartXG = s;
+            return this;
+        }
+        compute.chartYG = function(s) {
+            if (!arguments.length) return chartYG;
+            chartYG = s;
+            return this;
         }
         compute.network = function(s) {
             if (!arguments.length) return network;
@@ -193,6 +221,16 @@ var Utilities = {
         compute.yscale = function(s) {
             if (!arguments.length) return yscale;
             yscale = s;
+            return this;
+        }
+        compute.xrange = function(s) {
+            if (!arguments.length) return xrange;
+            xrange = s;
+            return this;
+        }
+        compute.yrange = function(s) {
+            if (!arguments.length) return yrange;
+            yrange = s;
             return this;
         }
         compute.origin = function(s) {

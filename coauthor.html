@@ -1,0 +1,70 @@
+<DOCTYPE! html>
+
+    <head>
+        <meta charset=UTF-8 />
+        <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
+        <title>CNS Visualization</title>
+        <script src="lib/angular/angular.js"></script>
+        <script src="lib/head.js"></script>
+        <script src="src/Init.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="left-column">
+                <div class="main-vis">
+                    <!-- <h3>Main Visualization Container</h3> -->
+                    <div ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-config="visuals/coauthor/forceNetwork01-config.js" ng-vis-type="ForceNetwork" id="forceNetwork01" ng-data-field="assist" ng-identifier="forceNetwork01">
+                    </div>
+                    <div class="above-drawer">
+                        <button class="drawer-toggle drawer-hamburger" style="">
+                            <span>Legend</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="legend-container drawer drawer--right">
+                    <div class="drawer-nav">
+                        <div class="legend">
+                            <div class="legend-row">
+                                <div class="legend-item">
+                                    <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeSize" id="nodeSize" ng-identifier="nodeSize">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="legend-item">
+                                    <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeColor" id="nodeColor" ng-identifier="nodeColor">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="legend-item">
+                                    <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeType" id="nodeType" ng-identifier="nodeType">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="legend-item">
+                                    <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendEdgeSize" id="edgeSize" ng-identifier="edgeSize">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-column">
+                <!-- <h3>Main Visualization Container</h3> -->
+                <div class="bar-graph-outer">
+                    <div class="bar-graph-inner">
+                        <div ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-config="visuals/coauthor/barChart01-config.js" ng-vis-type="HVBarChart" id="barChart01" ng-data-field="assist" ng-identifier="barChart01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-include="'partials/coauthor-popup.html'"></div>
+
+    </body>
+
+    </html>

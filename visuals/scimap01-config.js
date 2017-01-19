@@ -33,7 +33,7 @@ events.scimap01 = function(ntwrk) {
     ntwrk.SVG.underlyingEdges.on("mouseout", null)
 
     ntwrk.SVG.underlyingNodeG.on("click", function(d, i) {
-        angular.element($("#legend-table")).scope().$apply(function(scope) {
+        angular.element($("#popup-table")).scope().$apply(function(scope) {
             var something = [];
             var filtered = ntwrk.nestedData.sub_disc.filter(function(d1, i1) {
                 return parseInt(d1.key) == d.subd_id
@@ -49,12 +49,12 @@ events.scimap01 = function(ntwrk) {
             })
 
             if (filtered.length > 0) {
-                $(".legend").removeClass("default");
-                $("#legend-disc-name").text(d.disc_name);
-                $("#legend-subd-name").text(d.subd_name);
-                $("#legend-table-container").removeClass("default");
+                $(".popup").css({display: "block"})
+                $("#popup-disc-name").text(d.disc_name);
+                $("#popup-subd-name").text(d.subd_name);
+                $("#popup-table-container").css({display: "block"})
             } else {
-                $(".legend").addClass("default");
+                $(".popup").css({display: "none"})
             }
 
             scope.rowCollection = something
@@ -62,7 +62,7 @@ events.scimap01 = function(ntwrk) {
     })
 
     ntwrk.SVG.background.on("click", function(d, i) {
-        $(".legend").addClass("default");
+        $(".popup").css({display: "none"})
     })
 };
 

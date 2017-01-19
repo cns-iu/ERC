@@ -23,11 +23,33 @@ var Visualization = function(scope) {
     };
     scope.filteredData = scope.dataTemplate;
     scope.Verbose = verbose || false;
+
+    scope.fillVisSchema = function(from, to) {
+        for (var key in from) {
+            if (from.hasOwnProperty(key)) {
+                if (Object.prototype.toString.call(from[key]) === '[object Object]') {
+                    if (!to.hasOwnProperty(key)) {
+                        to[key] = {};
+                    }
+                    scope.fillVisSchema(from[key], to[key]);
+                } else if (!to.hasOwnProperty(key)) {
+                    to[key] = from[key];
+                }
+            }
+        }
+    }
+
+
     scope.CreateBaseConfig = function() {
         var out = {};
         out.margins = {};
         out.dims = {};
         out.meta = configs[scope.attrs.ngIdentifier];
+
+        if (scope.configSchema) {
+            scope.fillVisSchema(scope.configSchema, out.meta);
+        }
+
         out.margins.top = parseInt(scope.attrs.ngMarginTop) || 0;
         out.margins.right = parseInt(scope.attrs.ngMarginRight) || 0;
         out.margins.bottom = parseInt(scope.attrs.ngMarginBottom) || 0;
@@ -60,12 +82,16 @@ var Visualization = function(scope) {
                 scope.zoom = d3.behavior.zoom()
                     .scaleExtent(scaleExtent)
                     .on("zoom", zoomed);
+
                 function zoomed() {
                     scope.SVG.attr("transform", "translate(" + scope.zoom.translate() + ")scale(" + scope.zoom.scale() + ")");
                 }
-                scope.SVGBase.selectAll(".zoombutton")
+                var btn = scope.SVGBase.selectAll(".zoombutton")
                     .data(['zoom_in', 'zoom_out'])
                     .enter()
+                    .append("g")
+
+                btn
                     .append("rect")
                     .attr("x", function(d, i) {
                         return 10 + 35 * i
@@ -82,9 +108,16 @@ var Visualization = function(scope) {
                     })
                     .style("cursor", "pointer")
                     .style("border-radius", ".2em")
-                scope.SVGBase.selectAll(".zoomtext")
-                    .data(['+', '-'])
-                    .enter()
+                    .on("click", function(d, i) {
+                        d3.event.preventDefault();
+                        var factor = (i == 0) ? 1.1 : 1 / 1.1;
+                        intervalID = setInterval(zoom_by, 40, factor);
+                        setTimeout(function() {
+                            clearInterval(intervalID);
+                            intervalID = undefined;
+                        }, 50)
+                    })
+                btn
                     .append("text")
                     .attr("class", "button")
                     .attr("x", function(d, i) {
@@ -92,20 +125,28 @@ var Visualization = function(scope) {
                     })
                     .attr("y", 25)
                     .text(function(d, i) {
-                        return d
+                        return (i == 0) ? "+" : "-"
                     })
                     .style("cursor", "pointer")
-
+                    .on("click", function(d, i) {
+                        d3.event.preventDefault();
+                        var factor = (i == 0) ? 1.1 : 1 / 1.1;
+                        intervalID = setInterval(zoom_by, 40, factor);
+                        setTimeout(function() {
+                            clearInterval(intervalID);
+                            intervalID = undefined;
+                        }, 50)
+                    })
                 var intervalID;
-                d3.selectAll('.button').on('mousedown', function() {
-                    d3.event.preventDefault();
-                    var factor = (this.id === 'zoom_in') ? 1.1 : 1 / 1.1;
-                    intervalID = setInterval(zoom_by, 40, factor);
-                    setTimeout(function() {
-                        clearInterval(intervalID);
-                        intervalID = undefined;
-                    }, 50)
-                })
+                // d3.selectAll('.button').on('mousedown', function() {
+                //     d3.event.preventDefault();
+                //     var factor = (this.id === 'zoom_in') ? 1.1 : 1 / 1.1;
+                //     intervalID = setInterval(zoom_by, 40, factor);
+                //     setTimeout(function() {
+                //         clearInterval(intervalID);
+                //         intervalID = undefined;
+                //     }, 50)
+                // })
                 function zoom_by(factor) {
                     var scale = scope.zoom.scale(),
                         extent = scope.zoom.scaleExtent(),
@@ -279,10 +320,12 @@ var Visualization = function(scope) {
         })
     };
     scope.prepareData = function() {
-        if (scope.attrs.ngComponentFor) {
-            scope.filteredData = JSON.parse(JSON.stringify(window[scope.attrs.ngComponentFor].filteredData));
-        } else {
-            scope.filteredData = JSON.parse(JSON.stringify(scope.data));
+        if (scope.attrs.ngDataField) {
+            if (scope.attrs.ngComponentFor) {
+                scope.filteredData = JSON.parse(JSON.stringify(window[scope.attrs.ngComponentFor].filteredData));
+            } else {
+                scope.filteredData = JSON.parse(JSON.stringify(scope.data));
+            }
         }
         if (dataprep[scope.attrs.ngIdentifier]) {
             dataprep[scope.attrs.ngIdentifier](scope)

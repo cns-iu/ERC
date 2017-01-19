@@ -1,30 +1,8 @@
-visualizationFunctions.LegendNodeSize = function(element, data, opts) {
+visualizationFunctions.LegendNodeType = function(element, data, opts) {
     var context = this;
     context.config = context.CreateBaseConfig();
-    // context.SVG = context.config.easySVG(element[0])
     context.VisFunc = function() {
-        
-        // var data = [4, 20];
-        // var extent = d3.extent(data);
-
-        // context.SVG.nodeG = context.SVG.append("g")
-        //     .attr("transform", "translate(" + (context.config.dims.fixedWidth / 3) + ", 0)")
-        //     .selectAll(".node")
-        //     .data([extent[0], d3.mean(extent), extent[1]])
-        //     .enter()
-        //     .append("g")
-
-        // context.SVG.nodes = context.SVG.nodeG
-        //     .each(function(d, i) {
-        //         var currG = d3.select(this);
-        //         currG.append("circle")
-        //             .attr("r", d)
-        //             .attr("stroke", "black")
-        //     })
-
-
-
-        d3.xml("visuals/LegendNodeSize/LegendNodeSize/legend.svg").mimeType("image/svg+xml").get(function(error, xml) {
+        d3.xml("visuals/LegendNodeType/LegendNodeType/legend.svg").mimeType("image/svg+xml").get(function(error, xml) {
             if (error) throw error;
             context.SVG = d3.select(xml.documentElement);
             element[0].appendChild(context.SVG.node());
@@ -55,7 +33,6 @@ visualizationFunctions.LegendNodeSize = function(element, data, opts) {
                 return context.SVG.selectAll("#minG");
             }
 
-
             context.getMaxVal = function() {
                 return context.getMaxG().selectAll("text");
             }
@@ -67,16 +44,6 @@ visualizationFunctions.LegendNodeSize = function(element, data, opts) {
             }
             context.getNote = function() {
                 return context.SVG.selectAll("#note");
-            }
-
-            context.getMaxNode = function() {
-                return context.SVG.selectAll("#maxNode");
-            }
-            context.getMidNode = function() {
-                return context.SVG.selectAll("#midNode");
-            }
-            context.getMinNode = function() {
-                return context.SVG.selectAll("#minNode");
             }
 
             context.setTitle = function(text) {
@@ -94,42 +61,20 @@ visualizationFunctions.LegendNodeSize = function(element, data, opts) {
             context.setNote = function(text) {
                 context.getNote().text(text);
             }
-
-            //8 68 128
-
             context.SVG.attr("width", 150);
             context.SVG.attr("height", 150);
-            // context.setNodeSizes([4, 64])
         });
 
-        context.updateNodeSize = function(arr) {          
-            var minNode = context.getMinNode();
-            var midNode = context.getMidNode();
-            var minNodeSize = (64 * arr[0]) / arr[1];
-            var midNodeSize = (64 + minNodeSize) / 2;
-
-            minNode
-                .attr("r", minNodeSize)
-                .attr("cy", 174 - minNodeSize)
-            
-            midNode
-                .attr("r", midNodeSize)
-                .attr("cy", 174 - midNodeSize)
-            context.getMidG().attr("transform", "translate(70," + (174 - (midNodeSize * 2)) + ")")
-            context.getMinG().attr("transform", "translate(70," + (174 - (minNodeSize * 2)) + ")")
-        }
-
-        context.updateTextFromFunc = function(f) {
-            var max = f(96);
-            var mean = f(57.6);
-            var min = f(19.2);
-            nodeSize.updateText([min, mean, max]);
+        context.updateTypeColors = function(arr) {
+            context.getMinG().selectAll("rect").style("fill", arr[2])
+            context.getMidG().selectAll("rect").style("fill", arr[1])
+            context.getMaxG().selectAll("rect").style("fill", arr[0])
         }
 
         context.updateText = function(arr) {
-            context.setMinVal(Utilities.round(arr[0], 0))
-            context.setMidVal(Utilities.round(arr[1], 0))
-            context.setMaxVal(Utilities.round(arr[2], 0))
+            context.setMinVal(arr[2])
+            context.setMidVal(arr[1])
+            context.setMaxVal(arr[0])
         }
 
     }
