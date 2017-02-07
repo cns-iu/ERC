@@ -1,0 +1,49 @@
+<DOCTYPE! html>
+
+    <head>
+        <meta charset=UTF-8 />
+        <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
+        <title>CNS Visualization</title>
+        <script src="lib/angular/angular.js"></script>
+        <script src="lib/head.js"></script>
+        <script src="src/Init.js"></script>
+        <style>
+        </style>
+    </head>
+
+    <body>
+<!--         <button id="state">State</button>
+        <button id="city">City</button>    
+ -->        <div layout="row">
+            <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-config="visuals/prosym01-config.js" ng-vis-type="D3ProportionalSymbol" id="prosym01" ng-data-field="data/geomap.json" ng-identifier="prosym01">
+            </div>
+
+            <div id="node-size">
+                <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-data-field="data/toVis.json" ng-vis-type="LegendNodeSize" id="nodeSize" ng-identifier="nodeSize">
+                </div>
+            </div>
+<!--             <div id="edge-size">
+                <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-data-field="data/toVis.json" ng-vis-type="LegendEdgeSize" id="edgeSize" ng-identifier="edgeSize">
+                </div>
+            </div>
+ -->
+
+            <div ng-include="'partials/prosym-popup.html'"></div>
+        </div>
+    </body>
+<!--     <script type="text/javascript">
+    setTimeout(function() {
+        $("#state").on("click", function() {
+            prosym01.currCategory = "state";
+            prosym01.update();
+        })
+
+        $("#city").on("click", function() {
+            prosym01.currCategory = "city";
+            prosym01.update();
+        })
+    }, 200);
+    </script> -->
+    </html>
+
+

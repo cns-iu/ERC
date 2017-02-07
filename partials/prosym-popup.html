@@ -1,0 +1,34 @@
+<div layout="row" layout-margin class="legend default">
+    <div layout="column" layout-fill>
+        <div layout="row">
+            <div class="discipline-name">
+                <h2>Location: <span id="legend-location-name"></span></h2>
+            </div>
+        </div>
+        <div layout="row">
+            <!-- <md-progress-circular progress id="legend-table-progress" class="md-accent" md-mode="indeterminate"></md-progress-circular> -->
+            <p id="legend-table-no-records">No records found</p>
+            <div id="legend-table-container" class="default" ng-controller="tableCtrl" style="width: 100%">
+                <em>XX/XX nodes not shown here. Please provide proper affiliation data <a href="_blank">here</a>.</em>
+                <table id="legend-table" st-table="rowCollection" class="table table-striped" style="width: 100%">
+                    <thead>
+                        <tr>
+                            <th st-ratio="25" st-sort="auth">Author</th>
+                            <th st-ratio="25" st-sort="affil">Affiliation</th>
+                            <th st-ratio="25" st-sort="yr">Year</th>
+                            <th st-ratio="25" st-sort="title">Title</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="row in rowCollection">
+                            <td st-ratio="25">{{row.auth}}</td>
+                            <td st-ratio="25">{{row.affil}}</td>
+                            <td st-ratio="25">{{row.yr}}</td>
+                            <td st-ratio="25">{{row.title}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
