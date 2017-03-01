@@ -1,16 +1,42 @@
+.type-1 {
+    stroke: darkred !important;
+}
+.type-2 {
+    stroke: darkblue !important;
+}
+
+
+
+/*//temp axis style*/
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis .minor line {
+  stroke: #777;
+  stroke-dasharray: 2,2;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
 .hexagon {
     cursor: pointer;
 }
 
 .disc-label {
     font-weight: 600;
-    font-size: 20px;
-    cursor:pointer;
+    font-size: 14px;
+    cursor: pointer;
 }
 
-
 .background-clickable {
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .metric-rect {
@@ -49,14 +75,13 @@
 /* ---- Node Styles ---- */
 
 .wvf-node {
-    /*fill: #0BBCCE;*/
     stroke: #333333;
-    stroke-width: .5;
-    cursor:pointer;
+    stroke-width: 1px;
+    cursor: pointer;
 }
 
 .wvf-node.selected {
-    opacity: .8;
+    stroke-width: 4px;
 }
 
 .subd {
@@ -86,10 +111,11 @@
 /* ---- Labels ----- */
 
 .wvf-label {
-    font-size: 24px;
-    font-weight: 600 !important;
-    stroke-width: 1px;
-    stroke: #000000;
+    font-size: 15px;
+    stroke-width: .1;
+    stroke: #FFF;
+    /*font-weight: 800;*/
+    fill: black;
 }
 
 .wvf-label:hover {
@@ -104,25 +130,37 @@
 
 .wvf-label.focused {}
 
+.wvf-label-mid {
+    font-size: 13px;
+}
+
+.wvf-label-mid:hover {
+    cursor: pointer;
+    stroke: black;
+    stroke-width: .5px;
+    color: white;
+}
+
+.wvf-label-mid.selected {}
+
+.wvf-label-mid.deselected {
+    opacity: .2;
+}
+
+.wvf-label-mid.focused {}
+
 
 /* ---- Edge Styles ---- */
 
-#scimap01 .wvf-edge {
-    stroke: lightgrey !important;
+.wvf-edge {
+    stroke: lightgrey;
     /*cursor: pointer;*/
-    stroke-width: .75;
-    fill: none;
-}
-
-#prosym01 .wvf-edge {
-    stroke: white !important;
-    cursor: pointer;
     stroke-width: 1;
     fill: none;
 }
 
 .wvf-edge.selected {
-    stroke-width: 1;
+    stroke-width: 23;
     opacity: 1;
 }
 
@@ -135,21 +173,19 @@
 
 /* --- Rectangle Styles ---- */
 
-.wvf-rect.selected {}
+.wvf-rect {
+    fill: lightgrey;
+}
 
+.wvf-rect.selected {
+    stroke-width: 3px;
+}
 .wvf-rect.deselected {}
 
 .wvf-rect.focused {}
 
 
 /* --- Path Styles  ----- */
-
-.wvf-path {
-    fill: #222;
-    /*stroke: rgba(11, 188, 206, .125);*/
-    stroke: #111;
-    stroke-width: 1px;
-}
 
 .wvf-path.selected {}
 

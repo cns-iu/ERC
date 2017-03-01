@@ -1,0 +1,29 @@
+<div layout="row" layout-margin class="popup" style="display:none">
+    <div layout="column">
+        <div layout="row">
+            <div class="discipline-name">
+                <h2>Author: <span id="popup-name"></span></h2>
+            </div>
+        </div>
+        <div layout="row" layout-fill>
+            <!-- <md-progress-circular progress id="popup-table-progress" class="md-accent" md-mode="indeterminate"></md-progress-circular> -->
+            <p id="popup-table-no-records">No records found</p>
+            <div id="popup-table-container" class="default" ng-controller="tableCtrl">
+                <table id="popup-table" st-table="tableData" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th st-ratio="25" st-sort="coauthor">Co-Author</th>
+                            <th st-ratio="75" st-sort="publist">List of Publications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="row in tableData">
+                            <td st-ratio="25">{{row.coauthor}}</td>
+                            <td st-ratio="75">{{row.publist}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,7 +4,6 @@ var Visualization = function(scope) {
     scope.VisScript = null;
     scope.SVG = null;
     scope.Scales = {};
-    scope.Children = [];
     scope.isFirstRun = true;
     scope.PrimaryDataAttr = "";
     scope.dataTemplate = {
@@ -23,11 +22,30 @@ var Visualization = function(scope) {
     };
     scope.filteredData = scope.dataTemplate;
     scope.Verbose = verbose || false;
+    scope.fillVisSchema = function(from, to) {
+        for (var key in from) {
+            if (from.hasOwnProperty(key)) {
+                if (Object.prototype.toString.call(from[key]) === '[object Object]') {
+                    if (!to.hasOwnProperty(key)) {
+                        to[key] = {};
+                    }
+                    scope.fillVisSchema(from[key], to[key]);
+                } else if (!to.hasOwnProperty(key)) {
+                    to[key] = from[key];
+                }
+            }
+        }
+    }
     scope.CreateBaseConfig = function() {
         var out = {};
         out.margins = {};
         out.dims = {};
         out.meta = configs[scope.attrs.ngIdentifier];
+
+        if (scope.configSchema) {
+            scope.fillVisSchema(scope.configSchema, out.meta);
+        }
+
         out.margins.top = parseInt(scope.attrs.ngMarginTop) || 0;
         out.margins.right = parseInt(scope.attrs.ngMarginRight) || 0;
         out.margins.bottom = parseInt(scope.attrs.ngMarginBottom) || 0;
@@ -60,13 +78,21 @@ var Visualization = function(scope) {
                 scope.zoom = d3.behavior.zoom()
                     .scaleExtent(scaleExtent)
                     .on("zoom", zoomed);
+
                 function zoomed() {
                     scope.SVG.attr("transform", "translate(" + scope.zoom.translate() + ")scale(" + scope.zoom.scale() + ")");
+                    zoomtext.text("(" + Utilities.round(scope.zoom.scale(), 2) + "x)");
                 }
-                scope.SVGBase.selectAll(".zoombutton")
+                var btn = scope.SVGBase.selectAll(".zoombutton")
                     .data(['zoom_in', 'zoom_out'])
                     .enter()
-                    .append("rect")
+                    .append("g")
+                var zoomtext = btn.append("text")
+                    .text("(" + scope.zoom.scale() + "x)")
+                    .attr("x", 80)
+                    .attr("y", 23)
+
+                btn.append("rect")
                     .attr("x", function(d, i) {
                         return 10 + 35 * i
                     })
@@ -82,30 +108,44 @@ var Visualization = function(scope) {
                     })
                     .style("cursor", "pointer")
                     .style("border-radius", ".2em")
-                scope.SVGBase.selectAll(".zoomtext")
-                    .data(['+', '-'])
-                    .enter()
-                    .append("text")
+                    .on("click", function(d, i) {
+                        d3.event.preventDefault();
+                        var factor = (i == 0) ? 1.1 : 1 / 1.1;
+                        intervalID = setInterval(zoom_by, 40, factor);
+                        setTimeout(function() {
+                            clearInterval(intervalID);
+                            intervalID = undefined;
+                        }, 50)
+                    })
+                btn.append("text")
                     .attr("class", "button")
                     .attr("x", function(d, i) {
                         return 20 + 35 * i
                     })
                     .attr("y", 25)
                     .text(function(d, i) {
-                        return d
+                        return (i == 0) ? "+" : "-"
                     })
                     .style("cursor", "pointer")
-
+                    .on("click", function(d, i) {
+                        d3.event.preventDefault();
+                        var factor = (i == 0) ? 1.1 : 1 / 1.1;
+                        intervalID = setInterval(zoom_by, 40, factor);
+                        setTimeout(function() {
+                            clearInterval(intervalID);
+                            intervalID = undefined;
+                        }, 50)
+                    })
                 var intervalID;
-                d3.selectAll('.button').on('mousedown', function() {
-                    d3.event.preventDefault();
-                    var factor = (this.id === 'zoom_in') ? 1.1 : 1 / 1.1;
-                    intervalID = setInterval(zoom_by, 40, factor);
-                    setTimeout(function() {
-                        clearInterval(intervalID);
-                        intervalID = undefined;
-                    }, 50)
-                })
+                // d3.selectAll('.button').on('mousedown', function() {
+                //     d3.event.preventDefault();
+                //     var factor = (this.id === 'zoom_in') ? 1.1 : 1 / 1.1;
+                //     intervalID = setInterval(zoom_by, 40, factor);
+                //     setTimeout(function() {
+                //         clearInterval(intervalID);
+                //         intervalID = undefined;
+                //     }, 50)
+                // })
                 function zoom_by(factor) {
                     var scale = scope.zoom.scale(),
                         extent = scope.zoom.scaleExtent(),
@@ -241,23 +281,11 @@ var Visualization = function(scope) {
         }
         return out;
     };
-    scope.ClearVis = function(empty) {
-        scope = scope;
-        try {
-            //TODO: Need to remove Leaflet somehow. 
-            scope.SVG.selectAll("*").remove();
-            $(scope.element).find(".svg-container").remove();
-            scope.SVG = null;
-            if (empty) $(scope.element).empty()
-        } catch (exception) {
-
+    scope.ResetVis = function() {
+        if (scope.SVG) {
+            scope.SVG.remove();
         }
-        return scope;
-    };
-    scope.ResetVis = function(args) {
-        var args = args || {};
-        scope.ClearVis(args.empty);
-        scope.prepareData();
+        $(scope.element).find("svg").remove();
         scope.RunVis();
         return scope;
     };
@@ -272,17 +300,14 @@ var Visualization = function(scope) {
         if (scope.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Events bound: " + scope.attrs.ngIdentifier);
         return scope;
     };
-    scope.RunChildVisualizations = function() {
-        scope.Children.forEach(function(v) {
-            window[v].Update();
-            window[v].PrimaryDataAttr = scope.PrimaryDataAttr;
-        })
-    };
+
     scope.prepareData = function() {
-        if (scope.attrs.ngComponentFor) {
-            scope.filteredData = JSON.parse(JSON.stringify(window[scope.attrs.ngComponentFor].filteredData));
-        } else {
-            scope.filteredData = JSON.parse(JSON.stringify(scope.data));
+        if (scope.attrs.ngDataField) {
+            if (scope.attrs.ngComponentFor) {
+                scope.filteredData = JSON.parse(JSON.stringify(window[scope.attrs.ngComponentFor].filteredData));
+            } else {
+                scope.filteredData = JSON.parse(JSON.stringify(scope.data));
+            }
         }
         if (dataprep[scope.attrs.ngIdentifier]) {
             dataprep[scope.attrs.ngIdentifier](scope)
@@ -290,7 +315,7 @@ var Visualization = function(scope) {
             console.warn("No dataprep for: " + scope.attrs.ngIdentifier)
         }
     };
-    scope.isResetOnResize = false;
+    scope.isResetOnResize = true;
     scope.resetOnResize = function() {
         function debouncer(func, timeout) {
             var timeoutID, timeout = timeout || 200;
@@ -304,7 +329,8 @@ var Visualization = function(scope) {
             }
         }
         $(window).resize(debouncer(function(e) {
-            scope.ResetVis({ empty: false });
+
+            scope.ResetVis();
         }));
         scope.isResetOnResize = true;
     }
@@ -315,6 +341,7 @@ var Visualization = function(scope) {
     scope.clearQueue = function() {
         window.clearTimeout(scope.RunVisQueue);
     }
+    scope.runVisPromise;
     scope.RunVis = function(args) {
         var args = args || {};
         if (Object.keys(scope.attrs).indexOf("ngResetOnResize") >= 0) {
@@ -324,23 +351,30 @@ var Visualization = function(scope) {
         }
         scope.clearQueue();
         scope.setQueue(function() {
-            scope.ClearVis(args.empty);
-            if (scope.isFirstRun) {
+            scope.runVisPromise = new Promise(function(resolve, reject) {
                 scope.prepareData();
+                resolve();
+            }).then(function(resolve, reject) {
                 scope.VisScript(scope.element, scope.data, scope.attrs);
-            }
-            try {
-                if (!scope.attrs.ngLazy || args.lazyRun) scope.VisFunc();
-            } catch (exception) {
-                if (scope.Verbose) console.log("Visualization failed: " + scope.attrs.ngIdentifier);
-                throw exception;
-            }
-            var indent = " ";
-            if (scope.attrs.ngComponentFor != null) indent += "     ";
-            if (scope.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Created scope: " + scope.attrs.ngIdentifier);
-            scope.RunChildVisualizations();
-            scope.RunEvents();
-            scope.isFirstRun = false;
+                try {
+                    if (!scope.attrs.ngLazy || args.lazyRun) {
+                        scope.VisFunc();
+                        resolve();
+                    }
+                } catch (exception) {
+                    if (scope.Verbose) {
+                        console.log("Visualization failed: " + scope.attrs.ngIdentifier);
+                        reject();
+                    }
+                }
+
+            }).then(function(resolve, reject) {
+                var indent = " ";
+                if (scope.attrs.ngComponentFor != null) indent += "     ";
+                if (scope.Verbose) console.log(new Date().toLocaleTimeString() + ":" + indent + "Created scope: " + scope.attrs.ngIdentifier);
+                scope.RunEvents();
+                scope.isFirstRun = false;
+            })
         })
 
         return scope;
