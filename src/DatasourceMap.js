@@ -15,7 +15,7 @@ var globalDatasourceMap = {
     	url: 'data/assist-coauthor.json'
     },
     nanohub: {
-        url: 'https://dev.nanohub.org/citations/curate/download/',
+        url: 'https://nanohub.org/citations/curate/download/',
         params: {
             hash: 'QUERYSTRING'
         },
