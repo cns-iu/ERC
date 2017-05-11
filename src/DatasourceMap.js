@@ -15,14 +15,42 @@ var globalDatasourceMap = {
     	url: 'data/assist-coauthor.json'
     },
     nanohub: {
-        url: 'https://nanohub.org/citations/curate/download/',
+        url: 'https://dev.nanohub.org/citations/curate/download/',
         params: {
             hash: 'QUERYSTRING'
         },
         toProcess: true
     },
     iufinal: {
-        url: 'data/katy/iu-finalformat.json',
+        // url: 'data/katy/iu-finalformat.json',
+        url: 'data/katy/iu-finalformat - USONLY.json',
+        toProcess: true
+    },
+    report: {
+        url: function() {
+            if (location.search == "?assist2014") {
+                return 'data/report/assist-2014+2015.json'
+            }
+            if (location.search == "?assist2016") {
+                return 'data/report/assist-2016+2017.json'
+            }
+            if (location.search == "?newt2015") {
+                return 'data/report/newt-2015+2016.json'
+            }
+            if (location.search == "?newt2016") {
+                return 'data/report/newt-2016+2017.json'
+            }
+            if (location.search == "?tanms2014") {
+                return 'data/report/tanms-2014+2015.json'
+            }
+            if (location.search == "?tanms2016") {
+                return 'data/report/tanms-2016+2017.json'
+            }
+        }(),
         toProcess: true
     }
 }
+
+//TODO: REMOVE THIS. FOR REPORT ONLY
+
+

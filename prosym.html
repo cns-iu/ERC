@@ -12,35 +12,21 @@
     <body>
         <div flex layout-fill layout="row">
             <div flex="80" layout="column">
-                <div flex="5" layout="row" style="min-height: 100px; justify-content: space-around; align-items: center;">
-                    <div flex="40" layout="column">
-                        <label>Filter labels by Node weight: </label>
-                        <input type="text" id="range" name="range" value="" />
-                    </div>
-                </div>
-                <div ng-include="'partials/coauthor-popup.html'"></div>
+                <div ng-include="'partials/prosym-popup.html'"></div>
                 <div flex>
-                    <div ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-reset-on-resize ng-config="visuals/forceNetwork01-config.js" ng-vis-type="ForceNetwork" id="forceNetwork01" ng-data-field="nanohub" ng-identifier="forceNetwork01">
+                    <div ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-reset-on-resize ng-config="visuals/prosym01-config.js" ng-vis-type="D3ProportionalSymbol" id="prosym01" ng-data-field="nanohub" ng-identifier="prosym01">
                     </div>
-                    <div class="legend-container legend">
+                    <div class="legend-container prosym legend">
                         <button>
                             <span>Legend</span>
                         </button>
                         <div class="legend-row">
                             <div flex layout="row">
-                                <div flex="75" layout="column">
+                                <div layout="column">
                                     <div flex class="legend-item-label">Nodes</div>
                                     <div flex layout="row">
                                         <div flex class="legend-item">
                                             <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeSize" id="nodeSize" ng-identifier="nodeSize">
-                                            </div>
-                                        </div>
-                                        <div flex class="legend-item">
-                                            <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeColor" id="nodeColor" ng-identifier="nodeColor">
-                                            </div>
-                                        </div>
-                                        <div flex class="legend-item">
-                                            <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeType" id="nodeType" ng-identifier="nodeType">
                                             </div>
                                         </div>
                                     </div>
@@ -61,7 +47,7 @@
             </div>
             <div flex style="overflow-y: scroll; overflow-x: hidden;">
                 <div style="overflow-y: hidden; overflow-x: hidden;">
-                    <div ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-reset-on-resize ng-config="visuals/barChart-configs.js" ng-vis-type="HVBarChart" id="barChart01" ng-data-field="nanohub" ng-identifier="barChart01">
+                    <div ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-reset-on-resize ng-config="visuals/barChart-configs.js" ng-vis-type="HVBarChart" id="barChart02" ng-data-field="nanohub" ng-identifier="barChart02">
                     </div>
                 </div>
             </div>
@@ -89,7 +75,6 @@
             }, 75);
             legendToggleOff = true;
         }
-
     }
     </script>
 

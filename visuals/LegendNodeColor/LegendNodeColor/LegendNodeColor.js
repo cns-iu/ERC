@@ -80,11 +80,22 @@ visualizationFunctions.LegendNodeColor = function(element, data, opts) {
         }
 
         context.updateText = function(arr) {
-            context.setMinVal(Utilities.round(arr[0], 0))
-            context.setMidVal(Utilities.round(arr[1], 0))
-            context.setMaxVal(Utilities.round(arr[2], 0))
+            var minVal = Utilities.round(arr[0], 0);
+            var midVal = Utilities.round(arr[1], 0);
+            var maxVal = Utilities.round(arr[2], 0);
+            if (minVal == midVal && midVal == maxVal) {
+                maxVal = "";
+            }
+            if (minVal == midVal || midVal == maxVal) {
+                midVal = "";
+            }
+            context.setMinVal(minVal);
+            context.setMidVal(midVal);
+            context.setMaxVal(maxVal);
+
         }
 
     }
     return context;
 }
+

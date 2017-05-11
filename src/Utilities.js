@@ -106,10 +106,12 @@ var Utilities = {
 
             var chartXAxis = d3.svg.axis()
                 .scale(xscale)
-                .orient(xorientation);
+                .orient(xorientation)
+                .ticks(4);
             var chartYAxis = d3.svg.axis()
                 .scale(yscale)
-                .orient(yorientation);
+                .orient(yorientation)
+                .ticks(4);
 
             origin = [originArr[0], originArr[1]]
             end = [endArr[0], endArr[1]]
@@ -403,7 +405,8 @@ var Utilities = {
         })
         .y(function(d) {
             return d.y;
-        }).interpolate("monotone"),
+        }).interpolate("bundle").tension(1),
+        // }).interpolate("basis"),
     makeDynamicScale: function(data, attr, scaleType, range) {
         var fullDomain = [];
         var rangeCalc;

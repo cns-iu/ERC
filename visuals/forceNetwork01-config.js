@@ -1,10 +1,3 @@
-//**DONE**AS long as popup exists, persist click event
-//**DONE**Make no year nodes white
-//**DONE**Fix labels
-//Fix zoom origin transform
-//Find two complimentary colors that have different contrasts
-//Zoom buttons need to ignore other events
-//**DONE**Add manual merge to url param
 configs.forceNetwork01 = {
     nodes: {
         styleEncoding: {
@@ -29,10 +22,6 @@ configs.forceNetwork01 = {
                 attr: "weight",
                 range: [1, 5]
             },
-            color: {
-                attr: "weight",
-                range: ["#131313", "#131313"]
-            },
             opacity: {
                 attr: "weight",
                 range: [.375, 1]
@@ -45,116 +34,71 @@ configs.forceNetwork01 = {
     labels: {
         identifier: {
             attr: "author"
+        },
+        styleEncoding: {
+            size: {
+                attr: "numPapers",
+                range: [23, 35],
+                scale: "linear"
+            }
         }
     },
     visualization: {
         forceLayout: {
             linkStrength: 0.9,
             friction: .9,
-            linkDistance: 20,
-            theta: 0.1,
-            alpha: 1
+            linkDistance: 25,
+            theta: 0,
+            alpha: .2
         }
     }
 }
 
 events.forceNetwork01 = function(ntwrk) {
     ntwrk.isPopupShowing = false;
-
-
-
     setTimeout(function() {
         configureDOMElements();
-    }, 500)
-    // setTimeout(function() {
-    //     var color1 = "darkred"
-    //     var color2 = "darkblue"
-    //     ntwrk.SVG.nodeG.each(function(d, i) {
-    //         d3.select(this).selectAll("circle").style("stroke", "lightgrey");
-    //         barChart01.SVG.barGroups.filter(function(d1, i1) {
-    //             return d.label == d1.key;
-    //         }).selectAll("rect").attr("stroke", "black")
-    //         var rand = Math.floor(Math.random() * 100);
-    //         if (rand > 30) {
-    //             d3.select(this).selectAll("circle").style("stroke", color1)
-    //             barChart01.SVG.barGroups.filter(function(d1, i1) {
-    //                 return d.label == d1.key;
-    //             }).selectAll("rect").style("stroke", color1)
-
-    //         }
-    //         if (rand > 10 && rand < 20) {
-    //             d3.select(this).selectAll("circle").style("stroke", color2)
-    //             barChart01.SVG.barGroups.filter(function(d1, i1) {
-    //                 return d.label == d1.key;
-    //             }).selectAll("rect").style("stroke", color2)
-    //         }
-    //     })
-    // }, 1000)
+    }, 500);
 
     ntwrk.SVG.nodeG.each(function(d, i) {
         if (d.firstYearPublished == null) {
             d3.select(this).selectAll("circle").attr("fill", "white");
         }
-    })
+    });
 
     ntwrk.SVG.nodeG.selectAll("text").style("pointer-events", "none")
 
-    ntwrk.SVG.edges.on("mouseover", edgeMouseover)
-    ntwrk.SVG.edges.on("mouseout", function(d, i) {
-        edgeMouseout()
-    })
-    ntwrk.SVG.nodeG.on("mouseover", nodeMouseover)
-    ntwrk.SVG.nodeG.on("mouseout", function(d, i) {
-        nodeMouseout()
-    })
-
-    ntwrk.SVG.nodeG.selectAll("circle").on("click", nodeClickEvent)
-    ntwrk.SVG.nodeG.selectAll("rect").on("click", nodeClickEvent)
-
-
-    function nodeClickEvent(d, i) {
-        if (!legendToggleOff) {
-            toggleLegend();
-        }
+    ntwrk.nodeClickEvent = function(d, i) {
         var tableData = [];
-        ntwrk.filteredData.edges.data.forEach(function(d1, i1) {
-            var found = false;
-            var coauth;
-            if (d1.source.id == d.id) {
-                found = true;
-                coauth = d1.target;
-            }
-            if (d1.target.id == d.id) {
-                found = true;
-                coauth = d1.source;
-            }
-            if (found) {
-                var publist = "";
-                d1.coauthoredWorks.forEach(function(d, i) {
-                    publist += d.title + "; ";
-                })
 
-                tableData.push({
-                    coauthor: coauth.author,
-                    publist: publist.substring(0, publist.length - 2),
-                    weight: d1.weight
-                })
-            }
+        ntwrk.filteredData.records.data.filter(function(d1, i1) {
+            return (d1.author_ids.indexOf(d.idd) > -1);
+        }).forEach(function(d1, i1) {
+            var authNodes = [];
+            d1.author_ids.forEach(function(d2, i2) {
+                var authNode = ntwrk.filteredData.nodes.data.find(function(d4, i4) {
+                    return (d2 == d4.idd);
+                });
+
+                if (authNode.idd != d.idd) authNodes.push(authNode.author);
+            })
+
+            tableData.push({
+                authors: authNodes.join("; "),
+                year: d1.year,
+                title: d1.title,
+                journal: d1.journal,
+                url: d1.url
+            })
         })
+
         $("#popup-name").text(d[configs.forceNetwork01.labels.identifier.attr])
-        $(".popup").css({ display: "block" });
-        $("#popup-table").css("display", "block");
-        angular.element($("#popup-table-container")).scope().clearTableData();
-        angular.element($("#popup-table-container")).scope().addTableData(tableData.sort(function(a, b) {
-            return a.weight > b.weight
-        }));
-        angular.element($("#popup-table-container")).scope().$apply();
-        $("#popup-table-container").css("display", "block");
+        //in Injectors.js. Makes it easier to do this across visualizations. 
+        showPopup(tableData);
         ntwrk.isPopupShowing = true;
+
     }
-
-
-    function edgeMouseover(d, i) {
+    ntwrk.edgeMouseover = function(d, i) {
         if (!ntwrk.isPopupShowing) {
             deselectSelection(ntwrk.SVG.edges);
             deselectSelection(ntwrk.SVG.nodeG);
@@ -172,8 +116,7 @@ events.forceNetwork01 = function(ntwrk) {
 
         }
     }
-
-    function edgeMouseout() {
+    ntwrk.edgeMouseout = function() {
         if (!ntwrk.isPopupShowing) {
             defaultSelection(ntwrk.SVG.nodeG);
             defaultSelection(ntwrk.SVG.edges);
@@ -181,7 +124,7 @@ events.forceNetwork01 = function(ntwrk) {
             showFilteredLabels();
         }
     }
-    function nodeMouseover(d, i) {
+    ntwrk.nodeMouseover = function(d, i) {
         if (!ntwrk.isPopupShowing) {
             d3.select(this).moveToFront();
             deselectSelection(ntwrk.SVG.edges);
@@ -202,7 +145,7 @@ events.forceNetwork01 = function(ntwrk) {
             d3.select(this).selectAll("text").style("display", "block");
         }
     }
-    function nodeMouseout() {
+    ntwrk.nodeMouseout = function() {
         if (!ntwrk.isPopupShowing) {
             defaultSelection(ntwrk.SVG.nodeG);
             defaultSelection(ntwrk.SVG.edges);
@@ -211,9 +154,7 @@ events.forceNetwork01 = function(ntwrk) {
         }
     }
 
-
     function updateNodes(val, orderedSizeCoding) {
-        console.log("updating nodes");
         var p = orderedSizeCoding[Math.floor(val / 100 * orderedSizeCoding.length)];
         // ntwrk.filteredData.nodes.data = ntwrk.allNodes.filter(function(d, i) {
         //     return (d[configs.forceNetwork01.nodes.styleEncoding.size.attr] > p);
@@ -223,10 +164,9 @@ events.forceNetwork01 = function(ntwrk) {
     }
 
     function updateLabelVisibility(val, orderedSizeCoding) {
-        var p = orderedSizeCoding[Math.floor(val / 100 * orderedSizeCoding.length)];
         ntwrk.SVG.nodeG.selectAll("text").style("display", "none").classed("deselected", false).classed("selected", false);
         ntwrk.SVG.nodeG.selectAll("text").style("display", function(d, i) {
-            if (d[configs.forceNetwork01.nodes.styleEncoding.size.attr] >= p) {
+            if (d[configs.forceNetwork01.nodes.styleEncoding.size.attr] >= val) {
                 d.keepLabel = true;
                 return "block"
             } else {
@@ -246,25 +186,6 @@ events.forceNetwork01 = function(ntwrk) {
         });
     }
 
-    function deselectSelection(sel) {
-        sel.classed("deselected", true).classed("selected", false);
-    }
-
-    function selectSelection(sel) {
-        sel.classed("deselected", false).classed("selected", true);
-    }
-
-    function defaultSelection(sel) {
-        sel.classed("deselected", false).classed("selected", false);
-    }
-
-    ntwrk.SVG.background.on("click", function() {
-        $(".popup").css({ display: "none" })
-        ntwrk.isPopupShowing = false;
-        nodeMouseout();
-    })
-
-
     function configureDOMElements() {
 
         $('.drawer').drawer();
@@ -276,13 +197,13 @@ events.forceNetwork01 = function(ntwrk) {
         orderedSizeCoding.sort(function(a, b) {
             return Number(a) - Number(b);
         });
-
+        console.log(orderedSizeCoding);
 
         var $range = $("#range");
         $range.ionRangeSlider({
-            min: 0,
-            max: 100,
-            from: 90,
+            min: d3.min(orderedSizeCoding),
+            max: d3.max(orderedSizeCoding) + 1,
+            from: d3.mean(orderedSizeCoding),
             // type: 'double',
             step: 1,
             grid: true,
@@ -291,34 +212,22 @@ events.forceNetwork01 = function(ntwrk) {
             }
         });
 
-        var $range = $("#range1");
-        $range.ionRangeSlider({
-            min: 0,
-            max: 100,
-            from: 0,
-            // type: 'double',
-            step: 1,
-            grid: true,
-            onChange: function(newVal) {
-                updateNodes(newVal.from, orderedSizeCoding)
-            }
-        });
         ntwrk.allNodes = [].concat(ntwrk.filteredData.nodes.data);
         ntwrk.allEdges = [].concat(ntwrk.filteredData.edges.data);
-        updateLabelVisibility(90, orderedSizeCoding);
+        updateLabelVisibility(d3.mean(orderedSizeCoding), orderedSizeCoding);
 
         slider = $("#range").data("ionRangeSlider");
         var sliderFormElem = $("#sliderForm");
         var sliderFormScope = angular.element(sliderFormElem).scope();
         nodeSize.setTitle("#Papers")
-        nodeSize.setNote("Based on zoom level (x " + Utilities.round(ntwrk.zoom.scale(), 1) + ")")
+        nodeSize.setNote("Based on zoom level (" + Utilities.round(ntwrk.zoom.scale(), 1) + "x)")
         nodeSize.updateNodeSize(configs.forceNetwork01.nodes.styleEncoding.size.range);
         nodeSize.updateTextFromFunc(function(d) {
             return ntwrk.Scales.nodeSizeScale.invert(d / 2) / ntwrk.zoom.scale();
         });
 
         edgeSize.setTitle("#Co-authored Papers")
-        edgeSize.setNote("Based on zoom level (x " + Utilities.round(ntwrk.zoom.scale(), 1) + ")")
+        edgeSize.setNote("Based on zoom level (" + Utilities.round(ntwrk.zoom.scale(), 1) + "x)")
         edgeSize.updateEdgeSize(configs.forceNetwork01.edges.styleEncoding.strokeWidth.range);
         edgeSize.updateTextFromFunc(function(d) {
             return ntwrk.Scales.edgeSizeScale.invert(d / 2) / ntwrk.zoom.scale();
@@ -341,12 +250,24 @@ events.forceNetwork01 = function(ntwrk) {
                 edgeSize.updateTextFromFunc(function(d) {
                     return ntwrk.Scales.edgeSizeScale.invert(d / 2) / ntwrk.zoom.scale();
                 });
-                nodeSize.setNote("Based on zoom level (x " + Utilities.round(ntwrk.zoom.scale(), 1) + ")")
-                edgeSize.setNote("Based on zoom level (x " + Utilities.round(ntwrk.zoom.scale(), 1) + ")")
+                nodeSize.setNote("Based on zoom level (" + Utilities.round(ntwrk.zoom.scale(), 1) + "x)")
+                edgeSize.setNote("Based on zoom level (" + Utilities.round(ntwrk.zoom.scale(), 1) + "x)")
             }, 10);
         });
     }
 
+    ntwrk.SVG.edges.on("mouseover", ntwrk.edgeMouseover)
+    ntwrk.SVG.edges.on("mouseout", ntwrk.edgeMouseout)
+    ntwrk.SVG.nodeG.on("mouseover", ntwrk.nodeMouseover)
+    ntwrk.SVG.nodeG.on("mouseout", ntwrk.nodeMouseout)
+    ntwrk.SVG.nodeG.selectAll("circle").on("click", ntwrk.nodeClickEvent)
+    ntwrk.SVG.nodeG.selectAll("rect").on("click", ntwrk.nodeClickEvent)
+
+    ntwrk.SVG.background.on("click", function() {
+        $(".popup").css({ display: "none" })
+        ntwrk.isPopupShowing = false;
+        ntwrk.nodeMouseout();
+    })
 }
 
 dataprep.forceNetwork01 = function(ntwrk) {

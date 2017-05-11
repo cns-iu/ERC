@@ -1,19 +1,21 @@
 visualizationFunctions.ForceNetwork = function(element, data, opts) {
     var context = this;
     //TODO: Not all events are unbound properly. Resetting the visualization just doesn't work. Do data filters instead if you need :)
-    this.ResetVis = function() { console.warn("Cannot reset Force Network visualization.") }
     this.VisFunc = function() {
         context.SVG = context.config.easySVG(element[0], {
                 zoomable: true,
                 zoomLevels: [.5, 20],
                 background: false
             }).attr("transform", "translate(" + (context.config.margins.left + context.config.dims.width / 2) + "," + (context.config.margins.top + context.config.dims.height / 2) + ")")
-            //Fits the nodes to the canvas a little bit better.
 
 
         context.Scales.nodeSizeScale = Utilities.makeDynamicScaleNew(d3.extent(context.filteredData.nodes.data, function(d, i) {
             return d[context.config.meta.nodes.styleEncoding.size.attr]
         }), context.config.meta.nodes.styleEncoding.size.range)
+
+        context.Scales.nodeTextScale = Utilities.makeDynamicScaleNew(d3.extent(context.filteredData.nodes.data, function(d, i) {
+            return d[context.config.meta.labels.styleEncoding.size.attr]
+        }), context.config.meta.labels.styleEncoding.size.range)
 
         context.Scales.nodeColorScale = Utilities.makeDynamicScaleNew(d3.extent(context.filteredData.nodes.data, function(d, i) {
             return d[context.config.meta.nodes.styleEncoding.color.attr]
@@ -103,9 +105,12 @@ visualizationFunctions.ForceNetwork = function(element, data, opts) {
                 .text(function(d, i) {
                     return d[context.config.meta.labels.identifier.attr]
                 })
-                .attr("x", 5)
+                .attr("x", 10)
                 .attr("y", 5)
                 .attr("display", "none")
+                .style("font-size", function(d, i) {
+                    return context.Scales.nodeTextScale(d[context.config.meta.labels.styleEncoding.size.attr])
+                })
 
 
             context.SVG.nodeG.exit().each(function(d, i) {
@@ -123,9 +128,9 @@ visualizationFunctions.ForceNetwork = function(element, data, opts) {
                 .style("stroke-width", function(d, i) {
                     return context.Scales.edgeSizeScale(d[context.config.meta.edges.styleEncoding.strokeWidth.attr])
                 })
-                .style("stroke", function(d, i) {
-                    return context.Scales.edgeColorScale(d[context.config.meta.edges.styleEncoding.color.attr])
-                })
+                // .attr("stroke", function(d, i) {
+                //     return context.Scales.edgeColorScale(d[context.config.meta.edges.styleEncoding.color.attr])
+                // })
                 .attr("opacity", function(d, i) {
                     return context.Scales.edgeOpacityScale(d[context.config.meta.edges.styleEncoding.opacity.attr])
                 })
@@ -181,7 +186,7 @@ visualizationFunctions.ForceNetwork = function(element, data, opts) {
             } else {
                 context.SVG.force.stop()
                 context.SVG.force
-                    .charge((context.config.meta.visualization.forceLayout.charge || -10 / k) / maxIntervalIteration * intervalIteration)
+                    .charge((context.config.meta.visualization.forceLayout.charge || -20 / k) / maxIntervalIteration * intervalIteration)
                     .gravity((context.config.meta.visualization.forceLayout.gravity || 100 * k) / maxIntervalIteration * intervalIteration)
                 context.SVG.force.start()
                 intervalIteration += 1;

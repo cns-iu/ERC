@@ -1,0 +1,65 @@
+<DOCTYPE! html>
+
+    <head>
+        <meta charset=UTF-8 />
+        <link rel='shortcut icon' type='image/x-icon' href='images/favicon.ico' />
+        <title>CNS Visualization</title>
+        <script src="lib/angular/angular.js"></script>
+        <script src="lib/head.js"></script>
+        <script src="src/Init.js"></script>
+    </head>
+
+    <body>
+        <div flex layout-fill layout="row">
+            <div flex layout="column">
+                <div ng-include="'partials/scimap-popup.html'"></div>
+                <div layout="column" layout-fill class="wrapper" ng-controller="ngCnsVisual" ng-reset-on-resize ng-data-attr="ng-cns-visual" ng-config="visuals/scimap01-config.js" ng-vis-type="MapOfScience" id="scimap01" ng-data-field="nanohub" ng-identifier="scimap01">
+                </div>
+                <div class="legend-container scimap legend">
+                    <button>
+                        <span>Legend</span>
+                    </button>
+                    <div class="legend-row">
+                        <div flex layout="row">
+                            <div flex="75" layout="column">
+                                <div flex class="legend-item-label">Nodes</div>
+                                <div flex layout="row">
+                                    <div flex class="legend-item">
+                                        <div layout="column" layout-fi ng-controller="ngCnsVisual" ng-data-attr="ng-cns-visual" ng-vis-type="LegendNodeSize" id="nodeSize" ng-identifier="nodeSize">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+    var legendToggleOff = true;
+    setTimeout(function() {
+        $(document).ready(function() {
+            $(".legend-container").click(function() {
+                toggleLegend();
+            });
+        });
+    }, 2000)
+
+    function toggleLegend() {
+        if (legendToggleOff) {
+            $(".legend-container").animate({
+                bottom: '0px'
+            }, 250);
+            legendToggleOff = false;
+        } else {
+            $(".legend-container").animate({
+                bottom: '-180px'
+            }, 75);
+            legendToggleOff = true;
+        }
+
+    }
+    </script>
+
+    </html>

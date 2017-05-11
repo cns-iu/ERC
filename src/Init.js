@@ -38,6 +38,8 @@ var scripts = [{
         "normalize.css": "lib/ion.rangeSlider/css/normalize.css"
     }, {
         "ion.rangeSlider.js": "lib/ion.rangeSlider/js/ion-rangeSlider/ion.rangeSlider.js"
+    }, {
+        "thenBy": "lib/thenBy.js"
     },
 
     {

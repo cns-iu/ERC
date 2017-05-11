@@ -88,6 +88,7 @@ var Visualization = function(scope) {
                     .enter()
                     .append("g")
                 var zoomtext = btn.append("text")
+                    .attr("class", "zoom-level-text")
                     .text("(" + scope.zoom.scale() + "x)")
                     .attr("x", 80)
                     .attr("y", 23)
@@ -315,7 +316,6 @@ var Visualization = function(scope) {
             console.warn("No dataprep for: " + scope.attrs.ngIdentifier)
         }
     };
-    scope.isResetOnResize = true;
     scope.resetOnResize = function() {
         function debouncer(func, timeout) {
             var timeoutID, timeout = timeout || 200;
@@ -329,7 +329,6 @@ var Visualization = function(scope) {
             }
         }
         $(window).resize(debouncer(function(e) {
-
             scope.ResetVis();
         }));
         scope.isResetOnResize = true;
@@ -353,7 +352,7 @@ var Visualization = function(scope) {
         scope.setQueue(function() {
             scope.runVisPromise = new Promise(function(resolve, reject) {
                 scope.prepareData();
-                resolve();
+                resolve(resolve, reject);
             }).then(function(resolve, reject) {
                 scope.VisScript(scope.element, scope.data, scope.attrs);
                 try {
@@ -362,6 +361,7 @@ var Visualization = function(scope) {
                         resolve();
                     }
                 } catch (exception) {
+                    throw exception
                     if (scope.Verbose) {
                         console.log("Visualization failed: " + scope.attrs.ngIdentifier);
                         reject();

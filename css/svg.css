@@ -78,6 +78,11 @@
     stroke: #333333;
     stroke-width: 1px;
     cursor: pointer;
+    
+}
+
+.forceNetwork01 .wvf-node {
+    fill: #eaeaea;
 }
 
 .wvf-node.selected {
@@ -153,14 +158,13 @@
 /* ---- Edge Styles ---- */
 
 .wvf-edge {
-    stroke: lightgrey;
+    stroke: #9b9b9b !important;
     /*cursor: pointer;*/
     stroke-width: 1;
     fill: none;
 }
 
 .wvf-edge.selected {
-    stroke-width: 23;
     opacity: 1;
 }
 
@@ -195,6 +199,10 @@
 
 
 /* --- Area Styles  ----- */
+.wvf-area {
+    fill:#222;
+    stroke:#3b3b3b;
+}
 
 .wvf-area.selected {}
 
