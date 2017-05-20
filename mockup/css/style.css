@@ -1,0 +1,160 @@
+/* --------- General Styles -------------- */
+
+.container {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.container h3 {
+	font-weight: 400;
+    font-size: 18px;
+	background-color: #eaeaea;
+	color: #222 !important;
+    padding: 5px;
+    margin: 0px;
+}
+
+
+/* ======================================= 
+ ============= Left Column ===============
+ =========================================  */
+
+.left-column {
+	height: 100vh;
+	width: 80%;
+	flex-direction: column;
+}
+
+/* --------- Main Vis Area -------------- */
+
+.main-vis {
+	min-height: 700px;
+	border: 1px solid #eaeaea;
+	align-items: flex-end;
+}
+
+/* ======================================= 
+ ============= Right Column ===============
+ =========================================  */
+
+.right-column {
+	flex-direction: column;
+	width: 20%;
+}
+
+/* ---------- Bar Graph ---------------- */
+
+.bar-graph-outer {
+	max-height: 100%;
+/*	border: 1px solid #eaeaea;*/
+	overflow-y: auto;
+	height: 70%;
+}
+
+.bar-graph-inner {
+	overflow-y: auto;
+	min-height: 720px;
+}
+
+/* --------- Legend -------------- */
+
+.legend-container {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+}
+
+.above-drawer button {
+	right: 0;
+
+}
+
+.legend {
+	display: flex;
+/*	margin-right: 0 !important;*/
+/*	justify-content: flex-end;*/
+	flex-direction: flex-end;
+	height: 150px;
+}
+
+.legend-row {
+	top:0px;
+}
+
+#item-1 {
+	background: #fefefe;
+	border: 1px solid #eaeaea;
+	height: 125px;
+	width: 125px;
+}
+
+#item-2 {
+	background: #fefefe;
+	border: 1px solid #eaeaea;
+	height: 125px;
+	width: 125px;
+}
+
+#item-3 {
+	background: #fefefe;
+	border: 1px solid #eaeaea;
+	height: 125px;
+	width: 125px;
+}
+
+#item-4 {
+	background: #fefefe;
+	border: 1px solid #eaeaea;
+	height: 125px;
+	width: 125px;
+}
+
+/* ----- Drawer ------ */
+
+.above-drawer {
+	align-self: flex-end;
+}
+
+.drawer-nav {
+  position: fixed;
+  top: 72vh;
+  z-index: 101;
+/*  bottom: 0 !important;*/
+  overflow: none;
+  color: #222;
+  background-color: #fff;
+}
+
+/*!------------------------------------*\
+    Right
+\*!------------------------------------*/
+.drawer--right .drawer-nav {
+  right: -300.255rem;
+  -webkit-transition: right .6s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+  transition: right .6s cubic-bezier(0.190, 1.000, 0.220, 1.000);
+}
+
+.drawer--right.drawer-open .drawer-nav,
+.drawer--right .drawer-hamburger,
+.drawer--right.drawer-open .drawer-navbar .drawer-hamburger {
+  right: 0;
+}
+
+.drawer--right.drawer-open .drawer-hamburger {
+  right: 301.255rem;
+}
+/*!------------------------------------*\
+    Hamburger
+\*!------------------------------------*/
+
+.drawer-hamburger {
+ /* position: fixed;
+  margin-bottom: 20px;*/
+  z-index: 104;
+  display: block;
+}
+
+
+
+ 
