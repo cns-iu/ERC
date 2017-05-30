@@ -237,11 +237,40 @@ events.forceNetwork01 = function(ntwrk) {
         nodeColor.updateStopColors(configs.forceNetwork01.nodes.styleEncoding.color.range)
         nodeColor.updateText([d3.min(ntwrk.Scales.nodeColorScale.domain()), d3.mean(ntwrk.Scales.nodeColorScale.domain()), d3.max(ntwrk.Scales.nodeColorScale.domain())])
 
-        nodeType.setTitle("Author Type (DISABLED)")
-        nodeType.updateTypeColors(["#610009", "limegreen"])
+        var roleColor = ["red", "orange", "green", "blue", "lightgrey"];
+        nodeType.setTitle("Author Type")
+        nodeType.updateTypeColors(roleColor)
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        }
+
+        ntwrk.SVG.nodeG.selectAll("circle").style("stroke", function(d, i) {
+          switch (d.role) {
+            case "other": return roleColor[0]; break;
+            case "faculty": return roleColor[1]; break;
+            case "postdoc": return roleColor[2]; break;
+            case "staff": return roleColor[3]; break;
+            case "student": return roleColor[4]; break;
+          }
+        })
+
+
+        barChart01.SVG.barGroups.selectAll("rect").style("stroke", function(d, i) {
+            console.log(d);
+          switch (d.values.children[0].role) {
+            case "other": return roleColor[0]; break;
+            case "faculty": return roleColor[1]; break;
+            case "postdoc": return roleColor[2]; break;
+            case "staff": return roleColor[3]; break;
+            case "student": return roleColor[4]; break;
+          }
+        })
 
         //Faculty, Student, Unknown
-        nodeType.updateText(["Type A", "Type B", "Type C"])
+        var typeArr = []; 
+        ntwrk.filteredData.nodes.data.forEach(function(d, i) { if (d.role == null) d.role = "Other"})
+        ntwrk.filteredData.nodes.data.forEach(function(d, i) { if (typeArr.indexOf(toTitleCase(d.role)) == -1) typeArr.push(toTitleCase(d.role))})
+        nodeType.updateText(typeArr)
         ntwrk.SVG.on("mousewheel", function() {
             setTimeout(function() {
                 nodeSize.updateTextFromFunc(function(d) {

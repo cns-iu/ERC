@@ -26,6 +26,11 @@ var globalDatasourceMap = {
         url: 'data/katy/iu-finalformat - USONLY.json',
         toProcess: true
     },
+    test: {
+        // url: 'data/katy/iu-finalformat.json',
+        url: 'data/withroles.json',
+        toProcess: true
+    },    
     report: {
         url: function() {
             if (location.search == "?assist2014") {

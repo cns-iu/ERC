@@ -7,57 +7,62 @@ visualizationFunctions.LegendNodeType = function(element, data, opts) {
             context.SVG = d3.select(xml.documentElement);
             element[0].appendChild(context.SVG.node());
 
-            context.setNodeSizes = function(arr) {
-                var extent = d3.extent(arr);
-                var avg = (extent[1] - extent[0]) / 2;
-                context.getMaxNode()
-                    .attr("r", extent[1])
-                context.getMidNode()
-                    .attr("r", avg)
-                    .attr("cy", parseInt(context.getMaxNode().attr("cy")) + extent[1] - avg)
-                context.getMinNode()
-                    .attr("r", extent[0])
-                    .attr("cy", parseInt(context.getMaxNode().attr("cy")) + extent[1] - extent[0])
+            context.setTitle = function(text) {
+                context.getTitle().text(text);
             }
+
             context.getTitle = function() {
                 return context.SVG.selectAll("#title");
             }
 
-            context.getMaxG = function() {
-                return context.SVG.selectAll("#maxG");
+            context.getG1 = function() {
+                return context.SVG.selectAll("#g1");
             }
-            context.getMidG = function() {
-                return context.SVG.selectAll("#midG");
+            context.getG2 = function() {
+                return context.SVG.selectAll("#g2");
             }
-            context.getMinG = function() {
-                return context.SVG.selectAll("#minG");
+            context.getG3 = function() {
+                return context.SVG.selectAll("#g3");
             }
-
-            context.getMaxVal = function() {
-                return context.getMaxG().selectAll("text");
+            context.getG4 = function() {
+                return context.SVG.selectAll("#g4");
             }
-            context.getMidVal = function() {
-                return context.getMidG().selectAll("text");
-            }
-            context.getMinVal = function() {
-                return context.getMinG().selectAll("text");
-            }
-            context.getNote = function() {
-                return context.SVG.selectAll("#note");
+            context.getG5 = function() {
+                return context.SVG.selectAll("#g5");
             }
 
-            context.setTitle = function(text) {
-                context.getTitle().text(text);
+            context.getG1Val = function() {
+                return context.getG1().selectAll("text");
             }
-            context.setMaxVal = function(val) {
-                context.getMaxVal().text(val);
+            context.getG2Val = function() {
+                return context.getG2().selectAll("text");
             }
-            context.setMidVal = function(val) {
-                context.getMidVal().text(val);
+            context.getG3Val = function() {
+                return context.getG3().selectAll("text");
             }
-            context.setMinVal = function(val) {
-                context.getMinVal().text(val);
+            context.getG4Val = function() {
+                return context.getG4().selectAll("text");
             }
+            context.getG5Val = function() {
+                return context.getG5().selectAll("text");
+            }
+
+            context.setG1Val = function(val) {
+                context.getG1Val().text(val);
+            }
+            context.setG2Val = function(val) {
+                context.getG2Val().text(val);
+            }
+            context.setG3Val = function(val) {
+                context.getG3Val().text(val);
+            }
+            context.setG4Val = function(val) {
+                context.getG4Val().text(val);
+            }
+            context.setG5Val = function(val) {
+                context.getG5Val().text(val);
+            }
+
             context.setNote = function(text) {
                 context.getNote().text(text);
             }
@@ -66,15 +71,19 @@ visualizationFunctions.LegendNodeType = function(element, data, opts) {
         });
 
         context.updateTypeColors = function(arr) {
-            context.getMinG().selectAll("rect").style("fill", arr[2])
-            context.getMidG().selectAll("rect").style("fill", arr[1])
-            context.getMaxG().selectAll("rect").style("fill", arr[0])
+            context.getG1().selectAll("rect").style("fill", arr[4])
+            context.getG2().selectAll("rect").style("fill", arr[3])
+            context.getG3().selectAll("rect").style("fill", arr[2])
+            context.getG4().selectAll("rect").style("fill", arr[1])
+            context.getG5().selectAll("rect").style("fill", arr[0])
         }
 
         context.updateText = function(arr) {
-            context.setMinVal(arr[2])
-            context.setMidVal(arr[1])
-            context.setMaxVal(arr[0])
+            context.setG1Val(arr[4])
+            context.setG2Val(arr[3])
+            context.setG3Val(arr[2])
+            context.setG4Val(arr[1])
+            context.setG5Val(arr[0])
         }
 
     }
