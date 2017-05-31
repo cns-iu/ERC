@@ -237,7 +237,7 @@ events.forceNetwork01 = function(ntwrk) {
         nodeColor.updateStopColors(configs.forceNetwork01.nodes.styleEncoding.color.range)
         nodeColor.updateText([d3.min(ntwrk.Scales.nodeColorScale.domain()), d3.mean(ntwrk.Scales.nodeColorScale.domain()), d3.max(ntwrk.Scales.nodeColorScale.domain())])
 
-        var roleColor = ["red", "orange", "green", "blue", "lightgrey"];
+        var roleColor = ["#35618f", "#bde267", "#60409b", "#3dcdc1"];
         nodeType.setTitle("Author Type")
         nodeType.updateTypeColors(roleColor)
         function toTitleCase(str) {
